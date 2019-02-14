@@ -6,14 +6,15 @@ class CalcController { //criando uma classe
 		this._timeEl = document.querySelector("#hora");
 		 // anderline no JS significa que o atributos é privado
 		this._currentDate;
-		this.initialize();
+		this.initialize(); //função que chama o que deve iniciar junto com a página 
 	}
 
 	initialize() { //o que deve ser iniciado quando intanciarmos está classe
 		//setTimeOut(()=>{}, time); função que gera apena uma vez após o tempo determinado
-		this.setDisplayDateTime();		
+		
+		this.setDisplayDateTime();	//para a calculadora não ficar 1 segundo sem a informações do tempo, chamamos a função antes do setInterval	
 	
-		setInterval (()=>{
+		setInterval (()=>{ //setInterval demora um segundo +/- para iniciar o método e acionar ao display
 	
 			this.setDisplayDateTime();
 				
@@ -41,7 +42,20 @@ setDisplayDateTime() {
 		this._timeEl.innerHTML = value;
 	}
 
+
 //date-----------------------------
+	get currentDate(){
+
+		return new Date; //retornando a data de hoje
+		
+	}
+
+	set currentDate (valor) {
+		this._currentDate = valor;
+
+	}
+
+
 	get displayDate() {
 		return this._dateEl.innerHTML;
 	}
@@ -53,6 +67,7 @@ setDisplayDateTime() {
 
 
 
+//Display-------------------------------
 	get displayCalc () {
 
 		return this._displayCalcEl.innerHTML;
@@ -64,17 +79,5 @@ setDisplayDateTime() {
 		this._displayCalcEl.innerHTML = valor;
 	}
 
-	get currentDate(){
-
-		return new Date;
-		//variavel.toLocaleDateString("pt-BR", opicional)
-		//variavel.toLocaleTImeString("pt-BR")
-
-	}
-
-	set currentDate (valor) {
-		this._currentDate = valor;
-
-	}
-
+	
 }
