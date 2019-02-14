@@ -1,4 +1,4 @@
-class CalcController {
+class CalcController { //criando uma classe
 
 	constructor () {
 		this._displayCalcEl = document.querySelector("#display");
