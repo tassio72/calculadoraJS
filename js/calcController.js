@@ -1,12 +1,14 @@
 class CalcController { //criando uma classe
 
 	constructor () {
+		this._locale = "pt-Br";
 		this._displayCalcEl = document.querySelector("#display");
 		this._dateEl = document.querySelector("#data");
 		this._timeEl = document.querySelector("#hora");
 		 // anderline no JS significa que o atributos é privado
 		this._currentDate;
 		this.initialize(); //função que chama o que deve iniciar junto com a página 
+		this.initButtonsEvents(); //chamando eventos
 	}
 
 	initialize() { //o que deve ser iniciado quando intanciarmos está classe
@@ -24,14 +26,34 @@ class CalcController { //criando uma classe
 //methods
 
 setDisplayDateTime() {
-			this.displayDate = this.currentDate.toLocaleDateString("pt-Br",{ 
+	//Observe que para chamar os métodos, colocamos o this também.
+
+			//vamos colocar os valores de hoje no display
+			this.displayDate = this.currentDate.toLocaleDateString(this._locale,{ 
 				day: "2-digit",
 				month: "short",
 				year: "numeric"
 			});
-			this.displayTime = this.currentDate.toLocaleTimeString("pt-Br");
+			this.displayTime = this.currentDate.toLocaleTimeString(this._locale);
 	
 }	
+
+	initButtonsEvents() {
+	//bom lembra que tanto os botões quanto seus respectivos textos tem a mesma classe
+		let buttons = document.querySelectorAll("#buttons > g, #parts > g");
+
+		buttons.forEach((btn, index)=>{
+
+			btn.addEventListener ('click', e => {
+
+				console.log(btn.className.baseVal.replace("btn-","")); //.
+				console.log(index);
+
+			});
+
+
+		});
+	}
 
 //time----------------------------
 	get displayTime(){
