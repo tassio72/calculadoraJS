@@ -23,6 +23,8 @@ class CalcController { //criando uma classe
 			this.setDisplayDateTime();
 				
 		}, 1000);
+
+		this.setLastNumberToDisplay();
 	}
 
 //methods
@@ -47,10 +49,12 @@ setDisplayDateTime() {
 clearAll(){
 
 	this._operation = []; //limpando array
+    this.setLastNumberToDisplay(); 
 }
 
 clearEntry(){ //apagando o ultimo valor digitado pelo usuário
 	this._operation.pop(); // apaga o último valor do Array
+	this.setLastNumberToDisplay();
 }
 
 getLastOperation () { //verificando o ulitmo botão clicado
@@ -88,25 +92,60 @@ pushOperation(value){
 calc(){ //realizando as operações
 	//vamos usar o método eval, um´método que calcula valores dentro de uma String
 	//também vamos usar o join, que substitui um separador de uma string por outro
-		let last = this._operation.pop(); //tirando o último valor da [] e salvando na variável
+		
+	let last = "";
 
-		let result = eval (this._operation.join(""));
+	if (this._operation.length > 3){
+		last = this._operation.pop(); //tirando o último valor da [] e salvando na variável
+	}
+	
+	let result = eval(this._operation.join(""));
 
-		this._operation = [result, last]; //observe criamos outra array, com dois argumentos
+	if (last == "%") {
+
+		//result = result / 100;
+		result /= 100;
+		this._operation = [result];
+
+	} else {		
+	
+		this._operation = [result]; //observe criamos outra array, com dois argumentos
 										// o primeiro é o result dos três ultimos indexs da array antiga
 										//o segundo é o úlitmo index digitado, o qual acionou o método e exigiu a operação 
+
+		if (last) this._operation.push(last); //se last tiver algo, põe na array
+
+	}
+
+		this.setLastNumberToDisplay(); //atualizando display após o calculo
+
 
 }
 
 setLastNumberToDisplay(){ //atualizando o display
+/* Vamos atualizar o display com o último valor da Array*/
 
+	let lastNumber;
 
+	for (let i = this._operation.length-1; i => 0; i--){
+		
+		if(!this.isOperator(this._operation[i])){ // se não (!) é um operador, então é um número
+
+			lastNumber = this._operation[i]; 
+			break;
+
+		}
+		
+	}
+
+	if (!lastNumber) lastNumber = 0; //deixando sempre o array/display com valor 0, evitando de deixa-lo vazio
+	this.displayCalc = lastNumber; //mandando pro display
 }
 addOperation(value){
 //nós precisamos validar qual foi o botão digitado. Dependendo de qual foi, podemos ter que concaternar o valor clicado neste momento 
 //com o último valor add a Array
 
-console.log("A", value, isNaN(this.getLastOperation()));
+//a  primeira que vez algo é clicado, a Array está vazia, portanto da undefined e caí neste looping
 	if (isNaN(this.getLastOperation())){  //observe que vamos avaliar o último valor adicionado a Array e não o valor clicado neste momento
 		
 		if (this.isOperator(value)) { // verificando se o último valor digitado é um sinal, caso for, precisamos trocar pelo novo sinal
@@ -122,6 +161,8 @@ console.log("A", value, isNaN(this.getLastOperation()));
 
 			this.pushOperation(value); //mandando o valor (no caso, operador) para ultima posição da Array
 
+			this.setLastNumberToDisplay(); //atualizando display pela primeira vez
+
 		}
 		
 	} else { //se o último valor da Array for um número, ele cai aqui
@@ -129,6 +170,7 @@ console.log("A", value, isNaN(this.getLastOperation()));
 		if (this.isOperator(value)){
 
 			this.pushOperation(value);
+
 
 		} else {
 
@@ -198,7 +240,7 @@ execBtn (value){
 
 		case "igual":
 
-
+			this.calc();
 		break;
 
 		case "ponto":
