@@ -67,14 +67,46 @@ setLastOperation (value) { //alterando o úlitmo valor da Array ._operation
 isOperator(value){
     //verificando se o value está nesta Array. Caso não esteja, ele retorna -1
 	return (["+", "-","*","%","/"].indexOf(value) > -1); //aqui retornamo um boolean
-	
 
 }
 
+pushOperation(value){
+/*como temos que fazer as contas em trios (num + sinal + num), quando o Array tiver mais de 3 values,
+ vamos realizar a operação dos 3 primeiros, salvar em uma variável e aguarda as próximas ações do usuário.
+ Isso para garantir que a calculadora respeitará as regras de precedências da matemática
+*/
+	this._operation.push(value);
+
+	if (this._operation.length > 3){
+
+		this.calc();
+
+	}
+
+}
+
+calc(){ //realizando as operações
+	//vamos usar o método eval, um´método que calcula valores dentro de uma String
+	//também vamos usar o join, que substitui um separador de uma string por outro
+		let last = this._operation.pop(); //tirando o último valor da [] e salvando na variável
+
+		let result = eval (this._operation.join(""));
+
+		this._operation = [result, last]; //observe criamos outra array, com dois argumentos
+										// o primeiro é o result dos três ultimos indexs da array antiga
+										//o segundo é o úlitmo index digitado, o qual acionou o método e exigiu a operação 
+
+}
+
+setLastNumberToDisplay(){ //atualizando o display
+
+
+}
 addOperation(value){
 //nós precisamos validar qual foi o botão digitado. Dependendo de qual foi, podemos ter que concaternar o valor clicado neste momento 
 //com o último valor add a Array
 
+console.log("A", value, isNaN(this.getLastOperation()));
 	if (isNaN(this.getLastOperation())){  //observe que vamos avaliar o último valor adicionado a Array e não o valor clicado neste momento
 		
 		if (this.isOperator(value)) { // verificando se o último valor digitado é um sinal, caso for, precisamos trocar pelo novo sinal
@@ -88,15 +120,27 @@ addOperation(value){
 
 		} else {
 
-			this._operation.push(value);
+			this.pushOperation(value); //mandando o valor (no caso, operador) para ultima posição da Array
 
 		}
 		
-	} else {
+	} else { //se o último valor da Array for um número, ele cai aqui
 
-		let newValue = this.getLastOperation().toString() + value.toString();
-		//this._operation.push(newValue); //o push adicionando o value ao final do Array
-		this.setLastOperation(parseInt(newValue)); //alterando o valor como Interger
+		if (this.isOperator(value)){
+
+			this.pushOperation(value);
+
+		} else {
+
+
+			let newValue = this.getLastOperation().toString() + value.toString();
+			//this._operation.push(newValue); //o push adicionando o value ao final do Array
+			this.setLastOperation(parseInt(newValue)); //alterando o valor como Interger
+
+			this.setLastNumberToDisplay(); //atualizando display
+
+		}
+
 	}
 
 		console.log(this._operation);
