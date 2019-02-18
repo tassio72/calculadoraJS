@@ -1,6 +1,8 @@
 class CalcController { //criando uma classe
 
 	constructor () {
+		this._lastOperator = "";
+		this._lastNumber = "";
 
 		this._operation = [];
 		this._locale = "pt-Br";
@@ -89,6 +91,11 @@ pushOperation(value){
 
 }
 
+getResult(){
+
+	return eval(this._operation.join(""));
+}
+
 calc(){ //realizando as operações
 	//vamos usar o método eval, um´método que calcula valores dentro de uma String
 	//também vamos usar o join, que substitui um separador de uma string por outro
@@ -97,9 +104,12 @@ calc(){ //realizando as operações
 
 	if (this._operation.length > 3){
 		last = this._operation.pop(); //tirando o último valor da [] e salvando na variável
+		
+		this._lastOperator = this.getLastItem();
+		this._lastNumber = this.getResult(); //pegando o último número do Array
 	}
 	
-	let result = eval(this._operation.join(""));
+	let result = this.getResult();
 
 	if (last == "%") {
 
@@ -122,24 +132,33 @@ calc(){ //realizando as operações
 
 }
 
+getLastItem(isOperator = true){
+	
+	let lastItem
+
+ 	for (let i = this._operation.length-1;i >= 0; i--) {
+
+ 		if (this.isOperator(this._operation[i]) == isOperator){
+
+ 			lastItem = this._operation[i];
+ 			break
+
+ 		}
+
+ 	}
+
+ 	return lastItem
+
+}
+
 setLastNumberToDisplay(){ //atualizando o display
 /* Vamos atualizar o display com o último valor da Array*/
 
-	let lastNumber;
-
-	for (let i = this._operation.length-1; i => 0; i--){
-		
-		if(!this.isOperator(this._operation[i])){ // se não (!) é um operador, então é um número
-
-			lastNumber = this._operation[i]; 
-			break;
-
-		}
-		
-	}
+	let lastNumber = this.getLastItem(false);
 
 	if (!lastNumber) lastNumber = 0; //deixando sempre o array/display com valor 0, evitando de deixa-lo vazio
 	this.displayCalc = lastNumber; //mandando pro display
+
 }
 addOperation(value){
 //nós precisamos validar qual foi o botão digitado. Dependendo de qual foi, podemos ter que concaternar o valor clicado neste momento 
